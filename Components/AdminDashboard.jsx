@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js";
 import AdminNav from './AdminNav'
@@ -63,39 +64,45 @@ const AdminDashboard = () => {
   const chartRef = useRef(null);
 
   useEffect(() => {
-    const ctx = chartRef.current.getContext("2d");
+    if (chartRef.current) {
+      const ctx = chartRef.current.getContext('2d');
 
-    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-    gradient.addColorStop(0, "#667eea"); // blue
-    gradient.addColorStop(1, "#764ba2"); // purple
 
-    new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-        datasets: [
-          {
-            data: [20, 45, 28, 80, 99, 60],
-            backgroundColor: gradient,
-            borderColor: "transparent",
-            pointBackgroundColor: "transparent",
-            pointBorderColor: "transparent",
-          },
-        ],
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
+      const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+      gradient.addColorStop(0, "#667eea"); // blue
+      gradient.addColorStop(1, "#764ba2"); // purple
+
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+          datasets: [
+            {
+              data: [20, 45, 28, 80, 99, 60],
+              backgroundColor: gradient,
+              borderColor: "transparent",
+              pointBackgroundColor: "transparent",
+              pointBorderColor: "transparent",
+            },
+          ],
         },
-        plugins: {
-          legend: {
-            display: false,
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
           },
+          plugins: {
+            legend: {
+              display: false,
+            },
+          },
+          //not working properly
+          // maintainAspectRatio: false,
+          // responsive: true,
         },
-      },
-    });
+      })
+    };
   }, []);
 
 
@@ -123,12 +130,12 @@ const AdminDashboard = () => {
 
           <div>
             {/* four charts */}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-4 ">
+            <div class="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-8 mt-4 ">
               {
                 chartList.map((list, index) => {
                   return (
-                    <div class="col-span-1 ">
-                      <div class="bg-white shadow-lg rounded-lg p-4 px-5 max-w-[350px] md:w-auto">
+                    <div key={list.id} class="col-span-1 ">
+                      <div class="bg-white shadow-lg rounded-lg p-4 px-5  md:w-auto">
                         <div class="flex ">
                           <span class="text-primary border-primary py-3 rounded-full">
                             <div className='rounded-full border-2 p-4 border-[#1f65a2]' dangerouslySetInnerHTML={{ __html: list.svg }} />
@@ -139,8 +146,6 @@ const AdminDashboard = () => {
                         </div>
                         <div class="mt-4">
                           <h6 class="text-sm text-muted">{list.name}</h6>
-
-
                         </div>
                       </div>
                     </div>
@@ -151,11 +156,11 @@ const AdminDashboard = () => {
             {/* two graphs  */}
             <div className="grid grid-cols-1 mt-10 md:grid-cols-2 gap-8 ">
               {/* Row 1, Column 1 */}
-              <div className="col-span-1 md:w-auto bg-white rounded-lg h-[400px] shadow-lg">
+              <div className="col-span-1 md:w-auto bg-white rounded-lg md:h-auto shadow-lg">
                 <div className="w-full border-b-[1px] border-b-zinc-300 font-medium px-7 py-4 text-3xl ">
                   <p>Revenue</p>
                 </div>
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="95%" height={350}>
 
                   <LineChart data={data} className="mt-2 py-4 ">
                     <CartesianGrid strokeDasharray="2 2" />
@@ -181,9 +186,9 @@ const AdminDashboard = () => {
                 <div className="w-full border-b-[1px] border-b-zinc-300 font-medium px-7 py-4 text-3xl ">
                   <p>Status</p>
                 </div>
-                <div className="p-4 h-[300px] md:h-auto ">
+                <div className="p-4 h-[400px] md:h-auto ">
                   {/* <ResponsiveContainer width="100%" height="100%"> */}
-                    <canvas ref={chartRef} />
+                  <canvas ref={chartRef} />
                   {/* </ResponsiveContainer> */}
                 </div>
               </div>
@@ -195,37 +200,38 @@ const AdminDashboard = () => {
                   <p>Doctors List</p>
                 </div>
                 <div className="">
-                  <div className="flex py-4 text-zinc-800 border-b-[1px] border-b-zinc-300 bg-[#F8F9FA] px-5 text-[15px] font-medium  ">
+                  <div className="flex py-4 justify-start text-zinc-800 border-b-[1px] border-b-zinc-300 bg-[#F8F9FA] px-5 md:text-[12px] lg:text-[15px] sm:text-[10px] font-medium  ">
                     <div className="w-[40%]   ">
                       Doctors Name
                     </div>
-                    <div className="w-[20%] ">
+                    <div className="lg:w-[20%] md:w-[30%] sm:w-[30%] ">
                       Speciality
                     </div>
-                    <div className="w-[20%] ">
+                    <div className="lg:w-[20%] md:w-[30%] sm:w-[30%]">
                       Earned
                     </div>
-                    <div className="">
+                    <div className="lg:block md:hidden sm:hidden w-[20%]">
                       Reviews
                     </div>
                   </div>
                   {
                     doctorsList.map((items, index) => {
                       return (
-                        <div className="flex py-4 px-5 items-center border-b-[1px] hover:bg-[#F8F9FA] text-[15px] text-zinc-600">
-
-                          <div className="w-[40%] flex items-center space-x-4">
-                            <img className="rounded-full h-[50px] w-[50px] " src={items.img} alt="" />
-                            <p>
+                        <div key={items.id} className="flex py-4 px-5 items-center border-b-[1px] hover:bg-[#F8F9FA] md:text-[12px] lg:text-[15px] sm:text-[10px]  text-zinc-600">
+                          <div className="w-[40%] flex items-center justify-start lg:space-x-4">
+                            <img className="rounded-full lg:h-[50px] lg:w-[50px] lg:block md:hidden sm:hidden " src={items.img} alt="" />
+                            <p className="">
                               {items.name}
                             </p>
                           </div>
-                          <div className="w-[20%]">
+                          <div className="lg:w-[20%] md:w-[30%] sm:w-[30%]">
                             {items.speciality}
                           </div>
-
-                          <div className="w-[20%]">
+                          <div className="lg:w-[20%] md:w-[30%] sm:w-[30%]">
                             ${items.earning}
+                          </div>
+                          <div className="lg:block md:hidden sm:hidden  w-[20%]">
+
                           </div>
                         </div>
                       )
@@ -236,44 +242,44 @@ const AdminDashboard = () => {
               </div>
 
               {/* Row 2, Column 2 */}
-              <div className="col-span-1  bg-white md:w-[588px] rounded-lg shadow-lg mt-4">
+              <div className="col-span-1  bg-white md:col-span-1 rounded-lg shadow-lg mt-4">
                 <div className="bg-white md:w-auto rounded-lg shadow-lg">
                   <div className="w-full border-b-[1px] border-b-zinc-300 font-medium px-7 py-4 text-3xl ">
                     <p>Patients List</p>
                   </div>
                   <div className="">
-                    <div className="flex py-4 text-zinc-800 border-b-[1px] border-b-zinc-300 bg-[#F8F9FA] px-5 text-[15px] font-medium  ">
+                    <div className="flex py-4 text-zinc-800 border-b-[1px] border-b-zinc-300 bg-[#F8F9FA] px-5 md:text-[12px] lg:text-[15px] sm:text-[10px] font-medium  ">
                       <div className="w-[40%]   ">
                         Patients Name
                       </div>
-                      <div className="w-[20%] ">
-                        Phone                    </div>
-                      <div className="w-[20%] ">
+                      <div className="lg:w-[20%] md:w-[30%] sm:w-[30%] ">
+                        Phone
+                      </div>
+                      <div className="lg:w-[20%] md:w-[30%] sm:w-[30%] ">
                         Last Visited
                       </div>
-                      <div className="">
+                      <div className="lg:block md:hidden w-[20%] sm:hidden">
                         Paid
                       </div>
                     </div>
                     {
                       patientsList.map((items, index) => {
                         return (
-                          <div className="flex py-4 px-5 items-center border-b-[1px] hover:bg-[#F8F9FA] text-[15px] text-zinc-600">
-
-                            <div className="w-[40%] flex items-center space-x-4">
-                              <img className="rounded-full h-[50px] w-[50px] " src={items.img} alt="" />
+                          <div key={items.id} className="flex py-4 px-5 items-center border-b-[1px] hover:bg-[#F8F9FA] md:text-[12px] lg:text-[15px] sm:text-[10px] text-zinc-600">
+                            <div className="w-[40%] flex items-center lg:space-x-4">
+                              <img className="rounded-full lg:h-[50px] lg:w-[50px] md:hidden lg:block sm:hidden " src={items.img} alt="" />
                               <p>
                                 {items.name}
                               </p>
                             </div>
-                            <div className="w-[20%]">
+                            <div className="lg:w-[20%] md:w-[30%] sm:w-[30%]">
                               {items.phone}
                             </div>
 
-                            <div className="w-[20%]">
+                            <div className="lg:w-[20%] md:w-[30%] sm:w-[30%]">
                               {items.visit}
                             </div>
-                            <div className="w-[20%]">
+                            <div className="lg:block md:hidden sm:hidden w-[20%]">
                               ${items.paid}
                             </div>
                           </div>
@@ -297,48 +303,48 @@ const AdminDashboard = () => {
               <p>Apponitment List</p>
             </div>
             <div className="">
-              <div className="flex py-4 text-zinc-800 border-b-[1px] border-b-zinc-300 bg-[#F8F9FA] px-5 text-[15px] font-medium  ">
-                <div className="w-[25%]   ">
+              <div className="flex py-4 justify-start text-zinc-800 border-b-[1px] border-b-zinc-300 bg-[#F8F9FA] px-5 md:text-[12px] sm:text-[10px] lg:text-[15px] font-medium  ">
+                <div className="w-[25%]    ">
                   Doctor Name
                 </div>
-                <div className="w-[15%] ">
+                <div className="md:w-[15%] w-[20%] ">
                   Speciality
                 </div>
                 <div className="w-[25%] ">
                   Patient Name
                 </div>
-                <div className="w-[15%] mr-16">
+                <div className="md:w-[15%] w-[30%]">
                   Appointment Time
                 </div>
-                <div className="w-[10%]">
+                <div className="w-[10%] md:block hidden">
                   Status
                 </div>
-                <div className="w-[10%]">
+                <div className="w-[10%] md:block hidden">
                   Amount
                 </div>
               </div>
               {
                 appointmentList.map((items, index) => {
                   return (
-                    <div className="flex py-4 px-5 items-center border-b-[1px] hover:bg-[#F8F9FA] text-[15px] text-zinc-600">
+                    <div key={items.id} className="flex py-4 px-5 items-center border-b-[1px] hover:bg-[#F8F9FA] md:text-[12px] lg:text-[15px] sm:text-[10px] text-zinc-600">
 
-                      <div className="w-[40%] flex items-center space-x-4">
-                        <img className="rounded-full h-[50px] w-[50px] " src={items.Docimg} alt="" />
+                      <div className="w-[25%] flex items-center md:space-x-4">
+                        <img className="rounded-full lg:h-[50px] lg:w-[50px] md:h-[35px] md:w-[35px] sm:hidden lg:block md:block" src={items.Docimg} alt="" />
                         <p>
                           {items.Docname}
                         </p>
                       </div>
-                      <div className="w-[20%]">
+                      <div className="md:w-[15%] w-[20%]">
                         {items.Docspeciality}
                       </div>
 
-                      <div className="w-[40%] flex items-center space-x-4">
-                        <img className="rounded-full h-[50px] w-[50px] " src={items.Pimg} alt="" />
+                      <div className="w-[25%] flex items-center md:space-x-4">
+                        <img className="rounded-full lg:h-[50px] lg:w-[50px] md:h-[35px] md:w-[35px] sm:hidden lg:block md:block " src={items.Pimg} alt="" />
                         <p>
                           {items.Patname}
                         </p>
                       </div>
-                      <div className="w-[23%]">
+                      <div className="md:w-[15%] w-[30%]">
                         {
                           items.appointmenttime.map((item) => {
                             return (
@@ -350,10 +356,12 @@ const AdminDashboard = () => {
                           })
                         }
                       </div>
-                      <div className="w-[10%] items-center flex bg-black">
-                        on
+                      <div className="w-[10%] items-center   text-white md:flex hidden">
+                        <div className="bg-black px-4 py-2 rounded-2xl">
+                          on
+                        </div>
                       </div>
-                      <div className="w-[20%]">
+                      <div className="w-[10%] md:block hidden">
                         ${items.amount}
                       </div>
                     </div>

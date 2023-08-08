@@ -13,10 +13,12 @@ const AdminSidebar = (props,) => {
                 console.log(res.data.cat)
             })
     }, [])
+
+    
     return (
         <>
-            <div className='mt-[60px] z-50 '>
-                <div className="w-[250px] fixed bg-[#1B5A90] h-screen py-3 px-2 pb-20 overflow-y-auto ">
+            <div className='mt-[60px] z-50  '>
+                <div className="w-[80px] flex-col overflow-hidden transition-all hover:w-[250px] ease-in-out duration-500 fixed bg-[#1B5A90] h-screen py-3 px-2 pb-20 overflow-y-auto ">
                     {
                         sidebarItems.map((items, index) => {
                             return (<div className=' px-1  '>
