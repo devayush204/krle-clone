@@ -19,7 +19,7 @@ const AdminDashboard = () => {
     axios.get("/AdminDashboardCharts.json")
       .then((res) => {
         setChartList(res.data)
-        // console.log(res.data);
+         console.log(res.data);
       })
   }, [])
 
